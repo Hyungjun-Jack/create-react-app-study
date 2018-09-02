@@ -12,7 +12,7 @@ class App extends Component {
 
   componentDidMount(){
 
-    setTimeout(() => {
+    /*setTimeout(() => {
       this.setState({
         movies:[
           {
@@ -29,7 +29,8 @@ class App extends Component {
           }
         ]
       })
-    }, 2000)
+    }, 2000)*/
+    console.log(fetch("https://yts.am/api/v2/list_movies.json?sort_by=download_count"))
     
   }
 
@@ -41,10 +42,14 @@ class App extends Component {
     return movies
   }
 
+  _loading = () => {
+    return "Loading"
+  }
+
   render() {
     return (
       <div className="App">
-        {this.state.movies ? this._renderMovies() : "Loading" }
+        {this.state.movies ? this._renderMovies() : this._loading() }
       </div>
     )
   }
