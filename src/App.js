@@ -30,15 +30,42 @@ class App extends Component {
         ]
       })
     }, 2000)*/
-    console.log(fetch("https://yts.am/api/v2/list_movies.json?sort_by=download_count"))
+    //console.log(fetch("https://yts.am/api/v2/list_movies.json?sort_by=download_count"))
     
+    this._getMovies()
+  }
+
+  _getMovies = async () => {
+    const movies = await this._callApi()
+    console.log(movies)
+    this.setState({
+      movies : movies
+    })
+  }
+
+  _callApi = () => {
+    return fetch("https://yts.am/api/v2/list_movies.json?sort_by=download_count")
+    /*.then(response => {
+      console.log(response)
+      return response
+    })*/ 
+    .then(response => response.json())
+    //.then(json => console.log(json))
+    .then(json => json.data.movies)
+    .catch(err => console.log(err))
   }
 
   _renderMovies = () => {
-    const movies = this.state.movies.map((movie, index) => {
-      return <Movie title={movie.title} poster={movie.poster} key={index} />
+    const movies = this.state.movies.map(movie => {
+      return (
+        <Movie 
+          title={movie.title} 
+          poster={movie.medium_cover_image} 
+          genres={movie.genres} 
+          synopsis={movie.synopsis} 
+          key={movie.id} />
+      )
     })
-
     return movies
   }
 
@@ -47,9 +74,10 @@ class App extends Component {
   }
 
   render() {
+    const { movies } = this.state;
     return (
-      <div className="App">
-        {this.state.movies ? this._renderMovies() : this._loading() }
+      <div className={movies ? "App" : "App--loading"}>
+        {movies ? this._renderMovies() : "Loading" }
       </div>
     )
   }
